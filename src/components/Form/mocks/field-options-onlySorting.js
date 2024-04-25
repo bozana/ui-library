@@ -1,8 +1,9 @@
 export default {
 	name: 'options-onlySorting',
 	component: 'field-options',
-	label: 'Masthead',
-	description: 'Define the order of masthead roles for public display.',
+	label: 'Editorial Masthead',
+	description:
+		'Define the order of editorial masthead roles for public display.',
 	isOrderable: true,
 	allowOnlySorting: true,
 	value: [3, 5, 16],
