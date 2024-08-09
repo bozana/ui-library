@@ -5,7 +5,7 @@
 				<template #header>
 					<PkpHeader>
 						<h2>{{ title }}</h2>
-						<Spinner v-if="isLoading" />
+						<Spinner v-if="isLoadingItems" />
 					</PkpHeader>
 				</template>
 				<template #item-title="{item}">
@@ -33,6 +33,7 @@ import fetch from '@/mixins/fetch';
 import cloneDeep from 'clone-deep';
 import CounterReportsEditModal from './CounterReportsEditModal.vue';
 import {useModal} from '@/composables/useModal';
+import {useFetch} from '@/composables/useFetch';
 
 export default {
 	components: {
@@ -72,8 +73,6 @@ export default {
 		return {
 			items: [],
 			isLoadingItems: false,
-			latestItemsGetRequest: '',
-			isDownloadingReport: false,
 			activeForm: null,
 			activeFormTitle: '',
 		};
@@ -88,36 +87,19 @@ export default {
 		/**
 		 * Get the list of items from the server
 		 */
-		getItems() {
+		getItems: async function () {
 			let self = this;
-
 			this.isLoadingItems = true;
-			this.latestItemsGetRequest = $.pkp.classes.Helper.uuid();
 
-			$.ajax({
-				url: this.apiUrl + '/reports',
-				type: 'GET',
-				data: [],
-				_uuid: this.latestItemsGetRequest,
-				error(r) {
-					if (self.latestItemsGetRequest !== this._uuid) {
-						return;
-					}
-					self.ajaxErrorCallback(r);
-				},
-				success(r) {
-					if (self.latestItemsGetRequest !== this._uuid) {
-						return;
-					}
-					self.setItems(r);
-				},
-				complete(r) {
-					if (self.latestItemsGetRequest !== this._uuid) {
-						return;
-					}
-					self.isLoadingItems = false;
-				},
+			const {data, isSuccess, fetch} = useFetch(`${this.apiUrl}/reports`, {
+				method: 'GET',
 			});
+			await fetch();
+
+			if (isSuccess) {
+				self.setItems(data.value);
+			}
+			self.isLoadingItems = false;
 		},
 
 		/**

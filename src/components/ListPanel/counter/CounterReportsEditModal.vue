@@ -4,7 +4,7 @@
 			{{ title }}
 		</template>
 		<SideModalLayoutBasic>
-			<PkpForm
+			<CounterReportForm
 				v-bind="activeForm"
 				@set="(...args) => emit('updateForm', ...args)"
 				@success="(...args) => emit('formSuccess', ...args)"
@@ -16,7 +16,7 @@
 <script setup>
 import SideModalBody from '@/components/Modal/SideModalBody.vue';
 import SideModalLayoutBasic from '@/components/Modal/SideModalLayoutBasic.vue';
-import PkpForm from '@/components/Form/Form.vue';
+import CounterReportForm from '@/components/Form/counter/CounterReportForm.vue';
 
 defineProps({
 	title: {type: String, required: true},
