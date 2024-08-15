@@ -4,10 +4,10 @@
 			{{ title }}
 		</template>
 		<SideModalLayoutBasic>
-			<CounterReportForm
+			<PkpForm
 				v-bind="activeForm"
 				@set="(...args) => emit('updateForm', ...args)"
-				@success="(...args) => emit('formSuccess', ...args)"
+				@success="onSuccess"
 			/>
 		</SideModalLayoutBasic>
 	</SideModalBody>
@@ -16,11 +16,16 @@
 <script setup>
 import SideModalBody from '@/components/Modal/SideModalBody.vue';
 import SideModalLayoutBasic from '@/components/Modal/SideModalLayoutBasic.vue';
-import CounterReportForm from '@/components/Form/counter/CounterReportForm.vue';
+import PkpForm from '@/components/Form/Form.vue';
+//import {useForm} from '@/composables/useForm';
 
 defineProps({
 	title: {type: String, required: true},
 	activeForm: {type: Object, required: true},
+	//reportId: {type: String, required: false},
+	reportFields: {type: Array, required: true},
+	earliestDate: {type: String, required: true},
+	lastDate: {type: String, required: true},
 });
 const emit = defineEmits(['updateForm', 'formSuccess']);
 </script>
