@@ -34,7 +34,7 @@
 								:label="t('submission.submit.creditRoles.selectRole')"
 								:is-required="true"
 								:value="role"
-								:options="props.options.roles"
+								:options="roleOptions"
 								class="creditRole__roleSelect"
 								@change="
 									(fieldName, propName, newValue, localeKey) =>
@@ -122,18 +122,41 @@ const currentValue = computed({
 	set: (newVal) => emit('change', props.name, 'value', newVal),
 });
 
+const roleOptions = computed(() => {
+	return props.options.roles.map((role) => ({
+		value: role.value,
+		label: role.label,
+		disabled: false,
+	}));
+});
+
+updateWithSelectedRoles(roleOptions, currentValue);
+
 function addCreditRole() {
 	currentValue.value.push({
 		role: props.options.roles[0].value,
 		degree: props.options.degrees[0].value,
 	});
+	updateWithSelectedRoles(roleOptions, currentValue);
 }
 
 function removeCreditRole(index) {
 	currentValue.value.splice(index, 1);
+	updateWithSelectedRoles(roleOptions, currentValue);
 }
 
 function updateCreditRole(index, fieldName, newValue) {
 	currentValue.value[index][fieldName] = newValue;
+	updateWithSelectedRoles(roleOptions, currentValue);
+}
+
+function updateWithSelectedRoles(roleOptions, currentValue) {
+	roleOptions.value.filter((role) => {
+		if (currentValue.value.find((element) => element.role == role.value)) {
+			role.disabled = true;
+		} else {
+			role.disabled = false;
+		}
+	});
 }
 </script>
