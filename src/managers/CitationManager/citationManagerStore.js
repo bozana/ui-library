@@ -63,13 +63,10 @@ export const useCitationManagerStore = defineComponentStore(
 		/**
 		 * status processed citations
 		 */
-		const structuredCitations = computed(() =>
-			(citations.value || []).filter((citation) => citation?.isStructured),
-		);
-		const totalCitations = computed(() => structuredCitations.value.length);
+		const totalCitations = computed(() => (citations.value || []).length);
 		const processedCitations = computed(
 			() =>
-				structuredCitations.value.filter(
+				(citations.value || []).filter(
 					(citation) =>
 						citation?.processingStatus ===
 						pkp.const.citationProcessingStatus.PROCESSED,
