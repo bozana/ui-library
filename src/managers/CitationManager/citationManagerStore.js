@@ -63,14 +63,22 @@ export const useCitationManagerStore = defineComponentStore(
 		/**
 		 * status processed citations
 		 */
+		function countCitationsWithStatus(status) {
+			return (citations.value || []).filter(
+				(citation) => citation?.processingStatus === status,
+			).length;
+		}
+
 		const totalCitations = computed(() => (citations.value || []).length);
-		const processedCitations = computed(
-			() =>
-				(citations.value || []).filter(
-					(citation) =>
-						citation?.processingStatus ===
-						pkp.const.citationProcessingStatus.PROCESSED,
-				).length,
+		const processedCitations = computed(() =>
+			countCitationsWithStatus(pkp.const.citationProcessingStatus.PROCESSED),
+		);
+		const failedCitations = computed(() =>
+			countCitationsWithStatus(pkp.const.citationProcessingStatus.FAILED),
+		);
+		// A failed lookup has spent its retries, so it is as finished as a processed one.
+		const finishedCitations = computed(
+			() => processedCitations.value + failedCitations.value,
 		);
 
 		/**
@@ -79,7 +87,7 @@ export const useCitationManagerStore = defineComponentStore(
 		const reloadIntervalId = setInterval(() => {
 			if (
 				citationsMetadataLookup.value &&
-				processedCitations.value < totalCitations.value
+				finishedCitations.value < totalCitations.value
 			) {
 				// simple way to refresh publication
 				triggerDataChange();
@@ -277,6 +285,8 @@ export const useCitationManagerStore = defineComponentStore(
 
 			totalCitations,
 			processedCitations,
+			failedCitations,
+			finishedCitations,
 
 			deleteAllCitations,
 
